@@ -233,6 +233,27 @@ Speed/current can be changed in `src/buffer.c` (`SPEED_RPM`, the register values
 
 ---
 
+## Known behavior — Mainsail shows MCU load ~100% (false positive)
+
+Once this firmware is running, Mainsail's **MCU Load** bar for the LLL Plus may read **~100 %**. **This is a false positive — the MCU is not overloaded.**
+
+The autonomous auto-feed task bit-bangs the TMC2208 `VACTUAL` value over a software UART. Each update is a short, tightly-timed burst (~8 ms), which inflates the per-task timing **standard deviation** that Mainsail's load indicator is built on — even though the MCU is idle the vast majority of the time.
+
+Measured over a full print (`klippy.log` / MCU stats):
+
+| Metric | Value | Meaning |
+|---|---|---|
+| `mcu_awake` | ~0.03–0.06 | awake only **~3–6 %** of the time |
+| `mcu_task_avg` | ~0.4 ms | tasks are short |
+| `mcu_task_stddev` | ~2.5 ms | spikes from the bit-bang `VACTUAL` bursts (~8 ms) — this is what drives the "100 %" bar |
+| `send_seq` vs `receive_seq` | equal | no command backlog |
+| retransmits | a few bytes over a whole print | link healthy |
+| "Timer too close" / shutdowns | **0** | no real overload |
+
+**Conclusion:** the ~100 % reading is a display artifact of the bit-bang timing jitter, not an overloaded MCU. Auto-feed, buttons and runout all keep working normally — no action needed.
+
+---
+
 ## Status / disclaimer
 
 Validated on **one setup** (FLY LLL Buffer Plus, STM32F072CB).
