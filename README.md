@@ -178,7 +178,26 @@ switch_pin: ^!LLL_PLUS:PB7
 pause_on_runout: True
 ```
 
-`pause_on_runout: True` pauses the print automatically on runout — it uses Klipper's standard `[pause_resume]` (the same `PAUSE`/`RESUME` your slicer and `M600` rely on, present in virtually every config). **Don't** also add `runout_gcode: PAUSE`: that double-pauses and assumes the macro exists. If you'd rather a custom action, set `pause_on_runout: False` and add your own `runout_gcode:` (e.g. `M118 ...`).
+**Choosing the runout behaviour** (pick one):
+
+- **Simplest — most setups:** `pause_on_runout: True` and nothing else. On runout Klipper runs your normal `PAUSE`, *including the park position your `[gcode_macro PAUSE]` / `[pause_resume]` already defines* (the same one your slicer pause uses). Your park position lives in your `PAUSE` macro — `pause_on_runout` calls it, so you don't repeat it here.
+
+- **Add a notification / lights / etc.:** keep `pause_on_runout: True` and add a `runout_gcode:` — it runs **after** the pause, so use it for *extra* actions (not another pause):
+  ```ini
+  runout_gcode:
+      M118 LLL Plus: filament runout — paused
+  insert_gcode:
+      M118 LLL Plus: filament reinserted
+  ```
+
+- **Fully custom routine** (your own park macro, `M600`, unload sequence…): set `pause_on_runout: False` and put your macro in `runout_gcode:`:
+  ```ini
+  pause_on_runout: False
+  runout_gcode:
+      MY_RUNOUT_MACRO
+  ```
+
+> ⚠️ Don't put a bare `PAUSE` in `runout_gcode` while `pause_on_runout: True` — it's a double pause. And `pause_on_runout`/`PAUSE` both rely on `[pause_resume]` being in your config (standard on virtually all printers).
 
 **No motor/stepper/TMC section** — the firmware owns the motor; the host only reads `PB7`. Then `FIRMWARE_RESTART`.
 
@@ -216,7 +235,16 @@ Speed/current can be changed in `src/buffer.c` (`SPEED_RPM`, the register values
 
 ## Status / disclaimer
 
-Validated on **one setup** (FLY LLL Buffer Plus, STM32F072CB): auto-feed, manual buttons and runout-pause all working. Pins and register values are specific to this board. Use at your own risk — it's firmware on your hardware.
+Validated on **one setup** (FLY LLL Buffer Plus, STM32F072CB).
+
+**Bench-tested & working:**
+- Auto-feed — hall sensors driving the motor (core state machine + `VACTUAL`).
+- Manual **hold** of the feed / retract buttons (KEY1 / KEY2).
+- Runout on `PB7` → print pause.
+
+**Ported faithfully from Mellow's firmware but not individually exercised here** (no hardware/wiring to trigger them on this setup): mainboard signal control (`PB5`/`PB6`), the buttons' single-/double-click side-effects (EXT pin output, pause toggle), and the 60 s jam timeout.
+
+Pins and register values are specific to this board. Use at your own risk — it's firmware on your hardware.
 
 ## Credits
 
