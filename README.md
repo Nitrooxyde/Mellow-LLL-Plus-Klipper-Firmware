@@ -176,9 +176,9 @@ restart_method: command
 [filament_switch_sensor lll_entrance]
 switch_pin: ^!LLL_PLUS:PB7
 pause_on_runout: True
-runout_gcode:
-    PAUSE
 ```
+
+`pause_on_runout: True` pauses the print automatically on runout — it uses Klipper's standard `[pause_resume]` (the same `PAUSE`/`RESUME` your slicer and `M600` rely on, present in virtually every config). **Don't** also add `runout_gcode: PAUSE`: that double-pauses and assumes the macro exists. If you'd rather a custom action, set `pause_on_runout: False` and add your own `runout_gcode:` (e.g. `M118 ...`).
 
 **No motor/stepper/TMC section** — the firmware owns the motor; the host only reads `PB7`. Then `FIRMWARE_RESTART`.
 
