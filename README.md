@@ -244,7 +244,9 @@ Validated on **one setup** (FLY LLL Buffer Plus, STM32F072CB).
 
 **Ported faithfully from Mellow's firmware but not individually exercised here** (no hardware/wiring to trigger them on this setup): mainboard signal control (`PB5`/`PB6`), the buttons' single-/double-click side-effects (EXT pin output, pause toggle), and the 60 s jam timeout.
 
-Pins and register values are specific to this board. Use at your own risk — it's firmware on your hardware.
+Pins and register values are specific to this board.
+
+**⚠️ No warranty — use at your own risk.** This is experimental, community firmware provided **AS-IS, with NO WARRANTY of any kind** (see the [GPL-3.0](LICENSE) license — *Disclaimer of Warranty* §15 and *Limitation of Liability* §16). Flashing MCU firmware **can brick the board or damage hardware**. You assume **all** risk; the author accepts **no liability** for any damage, bricked board, failed/ruined print, or other loss. **Back up your existing firmware first** (Step 2) and make sure you understand each step before running it.
 
 ## Credits
 
