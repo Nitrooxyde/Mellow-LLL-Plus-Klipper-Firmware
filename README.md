@@ -4,6 +4,11 @@
 ![MCU](https://img.shields.io/badge/MCU-STM32F072CB-green)
 ![Klipper](https://img.shields.io/badge/Klipper-MCU%20firmware-orange)
 
+> **📌 Successor project — [Mellow-LLL-Plus-Canonical](https://github.com/Nitrooxyde/Mellow-LLL-Plus-Canonical).**
+> Same autonomous core, plus a complete Klipper host-control layer: per-lane roles, 21 G-code
+> commands, multi-lane (one USB per board), telemetry events, a Mainsail dashboard, a prebuilt
+> binary and a bilingual manual. **This repo stays valid** for a minimal, autonomous-only build.
+
 Custom **Klipper MCU firmware** for the Mellow **FLY LLL Buffer Plus** that brings together the **best of both worlds**:
 
 - 🟢 the **autonomous smart-buffer auto-feed** of Mellow's standalone firmware (hall sensors drive the feed motor *in firmware*, real-time), **and**
